@@ -57,38 +57,32 @@ class Solution:
 # loop until a->end index+1
 # get min window size
 # a+1 (check sum>=target)ifnot->b++
+# time: O(n)
+# space: O(1)
 
 class Solution:
     def minSubArrayLen(self, target: int, nums: List[int]) -> int:
-        # a-> start b->end  of window
+
         a,b = 0,0
         l=len(nums)
         count = 0
-        lw_min = l
-        #find end point b
-        while b < l:
-            count+=nums[b]
-            if count >= target:
-                lw_min = b-a+1
-                break
-            b+=1
-        print(a,b)
-        if b == l: return 0
-        #slide window
+        # set a max value which real length could not be
+        lw_min = l+1
+        # stop when a out of range: but some improvement to be more efficient, when b reached the last element, and count < target, now just get out of the loop
         while a < l:
+            # ++right until meet constraint
+            while b<l and count < target:
+                count+=nums[b]
+                b+=1
+            # if out of range and could not meet constraint -> break
+            if b==l and count < target: break
+            # else: get min value of len evey iteration
+            lw_min = min(lw_min,b-a)
+            # --left
             count-=nums[a]
             a+=1
-            if count >= target:
-                lw_min=min(lw_min,b-a+1)
-            else:
-                b+=1
-                while b<l:
-                    count+=nums[b]
-                    if count >= target:
-                        lw_min=min(lw_min,b-a+1)
-                        break
-                    b+=1
-        return  lw_min
+        # if lw_min is unchange, which means no such subarray
+        return lw_min if lw_min != (l+1) else 0
             
 ```
 ### **59. Spiral Matrix II**
